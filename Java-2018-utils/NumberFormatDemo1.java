@@ -37,6 +37,6 @@ public class NumberFormatDemo1 {
 		System.out.println(toCurrenyString(""));   // 
 		System.out.println(toCurrenyString("aaa"));   // aaa
 		System.out.println(toCurrenyString(1234567.00));   // 1,234,567.00
-		System.out.println(toCurrenyString(-1234567.00));   // 1,234,567.00
+		System.out.println(toCurrenyString(-1234567.00));   // -1,234,567.00
 	}
 }
