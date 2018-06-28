@@ -68,12 +68,14 @@ public class SortTIOBEFileNameByDate {
 		int nCount = files.length;
 		String[] list = new String[nCount];
 		int[][] buff = new int[nCount][3];
+
 		// init buff
 		for(int i = 0, n = 0; i < nCount; i++){
 			buff[i][0] = buff[i][1] = i;
 			Matcher m = regexTIOBEFile.matcher(files[i]);
 			buff[i][2] = m.find() ? getDatespan(m.group(1), m.group(2)) : ++n;
 		}
+
 		// sort data
 		for(int i = 0; i < nCount - 1; i++){
 			int nMin = i;
@@ -88,6 +90,7 @@ public class SortTIOBEFileNameByDate {
 				setIndex(buff, nMin, t);
 			}
 		}
+
 		// gernate result
 		for(int i = 0; i < nCount; i++){
 			list[i] = files[getIndex(buff, i)];
