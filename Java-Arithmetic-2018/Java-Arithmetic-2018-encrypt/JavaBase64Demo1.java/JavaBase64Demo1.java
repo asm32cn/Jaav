@@ -6,17 +6,24 @@ import java.util.Base64;
 class JavaBase64Demo1{
 	public final String _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 	public final Base64.Encoder b64encoder = Base64.getEncoder();	// Java 1.8 之后支持
+	public final Base64.Decoder b64decoder = Base64.getDecoder();	// Java 1.8 之后支持
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception{
 		JavaBase64Demo1 jbd = new JavaBase64Demo1();
 
-		String strSource = "go-base64-demo-1.go\n程序中书写着所见所闻所感，编译着心中的万水千山。";;
+		String strSource = "JavaBase64Demo1.java\n程序中书写着所见所闻所感，编译着心中的万水千山。";;
 		byte[] data = jbd.getBytes(strSource);
 
+		String strStdEncrypt = jbd.b64encoder.encodeToString( data );
+		String strStdDecrypt = new String( jbd.b64decoder.decode( strStdEncrypt ), "UTF-8" );
 		String strUserEncrypt = jbd.Base64Encode(strSource);
-		System.out.println("JavaBase64Demo1.java");
-		log( jbd.b64encoder.encodeToString( data ) );
-		log( strUserEncrypt );
+
+		log(strSource);
+
+		log( "strStdEncrypt:\n" + strStdEncrypt );
+		log( "strStdDecrypt:\n" + strStdDecrypt );
+
+		log( "strUserEncrypt:\n" + strUserEncrypt );
 	}
 
 	public byte[] getBytes(String s){
@@ -51,8 +58,6 @@ class JavaBase64Demo1{
 				enc2 = (chr1 & 3) << 4;
 				enc3 = enc4 = 64;
 			}
-			log(chr1);
-			log(enc1);
 			sb.append(_keyStr.charAt(enc1));
 			sb.append(_keyStr.charAt(enc2));
 			sb.append(_keyStr.charAt(enc3));
