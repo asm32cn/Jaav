@@ -1,22 +1,22 @@
 // JavaBase64Demo1.java
-import javax.crypto.*;
-import java.security.*;
+
 import java.util.Base64;
+import java.util.HashMap;
 
 class JavaBase64Demo1{
-	public final String _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-	public final Base64.Encoder b64encoder = Base64.getEncoder();	// Java 1.8 之后支持
-	public final Base64.Decoder b64decoder = Base64.getDecoder();	// Java 1.8 之后支持
+	public static final String _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+	public static final Base64.Encoder b64encoder = Base64.getEncoder();	// Java 1.8 之后支持
+	public static final Base64.Decoder b64decoder = Base64.getDecoder();	// Java 1.8 之后支持
 
 	public static void main(String[] args) throws Exception{
-		JavaBase64Demo1 jbd = new JavaBase64Demo1();
 
 		String strSource = "JavaBase64Demo1.java\n程序中书写着所见所闻所感，编译着心中的万水千山。";;
-		byte[] data = jbd.getBytes(strSource);
+		byte[] data = JavaBase64Demo1.getBytes(strSource);
 
-		String strStdEncrypt = jbd.b64encoder.encodeToString( data );
-		String strStdDecrypt = new String( jbd.b64decoder.decode( strStdEncrypt ), "UTF-8" );
-		String strUserEncrypt = jbd.Base64Encode(strSource);
+		String strStdEncrypt = JavaBase64Demo1.b64encoder.encodeToString( data );
+		String strStdDecrypt = new String( JavaBase64Demo1.b64decoder.decode( strStdEncrypt ), "UTF-8" );
+		String strUserEncrypt = JavaBase64Demo1.Base64Encode(strSource);
+		String strUserDecrypt = JavaBase64Demo1.Base64Decode(strUserEncrypt);
 
 		log(strSource);
 
@@ -24,16 +24,19 @@ class JavaBase64Demo1{
 		log( "strStdDecrypt:\n" + strStdDecrypt );
 
 		log( "strUserEncrypt:\n" + strUserEncrypt );
+		log( "strUserDecrypt:\n" + strUserDecrypt );
+
+		// log( (byte)(127));
 	}
 
-	public byte[] getBytes(String s){
+	public static byte[] getBytes(String s){
 		try{
 			return s.getBytes("UTF-8");
 		}catch(Exception ex){}
 		return null;
 	}
 
-	public String Base64Encode(String s){
+	public static String Base64Encode(String s){
 		byte[] data = getBytes(s);
 		int nCount = data.length;
 		byte chr1 = 0, chr2 = 0, chr3 = 0;
@@ -64,6 +67,33 @@ class JavaBase64Demo1{
 			sb.append(_keyStr.charAt(enc4));
 		}
 		return sb.toString();
+	}
+
+	public static String Base64Decode(String s) throws Exception{
+		int i = 0, n = 0, nCount = s.length();
+		int chr1 = 0, chr2 = 0, chr3 = 0;
+		int enc1 = 0, enc2 = 0, enc3 = 0, enc4 = 0;
+		byte[] cache = new byte[nCount * 3 / 4];
+		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+		int kl = _keyStr.length();
+		for(i = 0; i < kl; i++){
+			map.put(_keyStr.charAt(i), i);
+		}
+		i = 0;
+		while(i < nCount){
+			enc1 = map.get(s.charAt(i++));
+			enc2 = map.get(s.charAt(i++));
+			enc3 = map.get(s.charAt(i++));
+			enc4 = map.get(s.charAt(i++));
+
+			chr1 = (enc1 << 2) | (enc2 >> 4);
+			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+			chr3 = ((enc3 & 3) << 6) | enc4;
+			cache[n++] = (byte)chr1;
+			if(enc3 != 64) cache[n++] = (byte)chr2;
+			if(enc4 != 64) cache[n++] = (byte)chr3;
+		}
+		return new String(cache, "UTF-8");
 	}
 
 	public static void log(Object o){
